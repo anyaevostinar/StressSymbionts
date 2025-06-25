@@ -5,7 +5,7 @@ library(viridis)
 #Set your working directory to the Analysis folder for your project
 
 #Read in the data
-initial_data <- read.table("sample_treatment/munged_basic.dat", h=T)
+initial_data <- read.table("6-23-25_stress_death_chance_repeat/munged_basic.dat", h=T)
 final_update <- subset(initial_data, update == "1000")
 
 #Plot the host and symbiont interaction values by vertical transmission rate
