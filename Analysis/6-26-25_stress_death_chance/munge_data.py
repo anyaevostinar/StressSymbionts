@@ -5,7 +5,7 @@ folder = '../../Data/6-26-25_stress_death_chance/'
 
 seeds = range(1, 30)
 treatments_1 = [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
-treatments_2 = [0.00033, 6.7e-05]
+treatments_2 = [6.7e-05, 0.00033]
 header_prefix = "seed,death_chance,size,"#going to add size but idk
 
 def munge_file(out_file_name, out_file_header, in_file_prefix) :
