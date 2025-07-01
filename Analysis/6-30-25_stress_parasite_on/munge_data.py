@@ -14,10 +14,10 @@ def munge_file(out_file_name, out_file_header, in_file_prefix) :
     for seed in seeds :
         for t1 in treatments_1 :
             for t2 in treatments_2 :
-                dc = str(t1) # parasite death chance
+                ms = str(t1) # size
                 s = str(seed) # seed 
-                ms = str(t2) # its size
-                in_file_name = in_file_prefix + "PARASITE_DEATH" + dc + "_HOSTDEATH" + ms + "_SEED" + s + ".data"
+                dc = str(t2) # parasite death chance
+                in_file_name = in_file_prefix + "_PARASITEDEATH" + dc + "_HOSTDEATH" + ms + "_SEED" + s + ".data"
                 line_prefix = s + "," + ms + "," + dc + ","
                 try :
                     in_file = open(folder+in_file_name, 'r')
