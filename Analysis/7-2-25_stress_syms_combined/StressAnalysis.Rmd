@@ -20,19 +20,19 @@ standard_theme <- ggplot2::theme(panel.background = element_rect(fill='white', c
   
 standard_guides <-guides(fill="none",color=guide_legend(override.aes=list(fill=NA))) 
 
-standard_facet <- facet_grid(mut_size~death_chance) 
+standard_facet <- facet_wrap(~treatment) 
         
 standard_visuals <- list(standard_theme, standard_guides, standard_facet)
 ```
 
 # Read data
 ```{r}
-folder <- "../../../symbulation_experiments/exp_2024/2024.12.16_stress_death_chance/"
+folder <- ""
 ```
 ```{r}
 counts_df <- read.csv(paste0(folder,"org_counts.dat"),h=T)
 counts_df$seed <- as.factor(counts_df$seed)
-
+counts_df$treatment <- counts_df$sym_type
 if("treatment" %in% colnames(counts_df)){
   counts_df$treatment <- ifelse(counts_df$treatment == 0, "Mutualist", counts_df$treatment)
   counts_df$treatment <- ifelse(counts_df$treatment == 1, "Parasite", counts_df$treatment)
