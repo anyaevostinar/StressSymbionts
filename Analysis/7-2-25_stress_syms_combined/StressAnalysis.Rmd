@@ -44,10 +44,11 @@ if("treatment" %in% colnames(counts_df)){
 tasks_df <- read.csv(paste0(folder,"task_counts.dat"),h=T)
 tasks_df$seed <- as.factor(tasks_df$seed)
 
+tasks_df$treatment <- tasks_df$sym_type
 if("treatment" %in% colnames(tasks_df)){
-  counts_df$treatment <- ifelse(counts_df$treatment == 0, "Mutualist", counts_df$treatment)
-  counts_df$treatment <- ifelse(counts_df$treatment == 1, "Parasite", counts_df$treatment)
-  counts_df$treatment <- ifelse(counts_df$treatment == 2, "Neutral", counts_df$treatment)
+  tasks_df$treatment <- ifelse(tasks_df$treatment == 0, "Mutualist", tasks_df$treatment)
+  tasks_df$treatment <- ifelse(tasks_df$treatment == 1, "Parasite", tasks_df$treatment)
+  tasks_df$treatment <- ifelse(tasks_df$treatment == 2, "Neutral", tasks_df$treatment)
 }
 ```
 
@@ -103,7 +104,7 @@ not_plotter <- function(data_frame, weigh_by, ylab){
 ```
 
 ```{r}
-molten_tasks <- melt(tasks_df, id=c("seed","death_chance","update","mut_size"))
+molten_tasks <- melt(tasks_df, id=c("seed","sym_type","update","treatment"))
 
 molten_tasks$host_task <- grepl("host",molten_tasks$variable, fixed=TRUE)
 molten_tasks <- subset(molten_tasks, update %% 5000 == 0)
@@ -111,6 +112,6 @@ small_counts <- subset(counts_df, update %% 5000 == 0)
 ```
 
 ```{r}
-task_plotter(subset(molten_tasks, host_task), 1, "Host task count")
-task_plotter(subset(molten_tasks, host_task), small_counts$count, "Host task count / Host count")
+task_plotter(subset(molten_tasks, host_task), 1, "Host task count", T)
+task_plotter(subset(molten_tasks, host_task), small_counts$count, "Host task count / Host count",T)
 ```
