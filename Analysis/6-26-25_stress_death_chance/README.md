@@ -1,1 +1,1 @@
-This is a sample as a guideline for how to use our analysis scripts. 
+Experiment designed to test different host base death chances compared to two different host mutation sizes.

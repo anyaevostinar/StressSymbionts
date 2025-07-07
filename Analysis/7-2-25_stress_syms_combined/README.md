@@ -1,1 +1,1 @@
-We will be testing for a comparison between parasitism, mutualism, and no symbionts.
+We will be testing for a comparison between parasitism (0.7), mutualism(0.3), and neutral symbionts death chances. The host base death chance is 0.5.

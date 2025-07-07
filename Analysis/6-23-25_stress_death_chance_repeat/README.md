@@ -1,2 +1,2 @@
-Testing for different host base death change and mutation sizes. This experiment was only conducted with eight seeds.
+Test experiment for different host base death change and mutation sizes. This experiment was only conducted with eight seeds.
 Results showed that more NOT operations were performed when the mutation size was smaller, 
