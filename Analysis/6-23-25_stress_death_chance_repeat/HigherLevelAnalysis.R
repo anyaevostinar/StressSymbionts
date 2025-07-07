@@ -11,7 +11,7 @@ initial_data$task <- factor(initial_data$task, levels=c("NOT", "NAND", "AND", "O
 initial_data[2] <- data.frame(lapply(initial_data[2], function(x) {gsub("MOI0.0", "PA", x)}))
 initial_data[2] <- data.frame(lapply(initial_data[2], function(x) {gsub("MOI1.0", "PP", x)}))
 initial_data[2] <- data.frame(lapply(initial_data[2], function(x) {gsub("_", " ", x)}))
-final_update <- subset(initial_data, update == "100000")
+final_update <- subset(initial_data, updates == "100000")
 
 host_data <- subset(final_update, partner == "Parasite")
 
@@ -39,14 +39,14 @@ host_data <- subset(final_update, partner == "Parasite")
 #wilcox.test(subset(host_data, treatment=="Absent" & task=="ORN")$count, subset(host_data, treatment=="Present" & task=="ORN")$count)
 
 #All tasks over time
-ggplot(data=initial_data, aes(x=update, y=count, group=treatment, colour=treatment)) + ylab("Task count") + xlab("Updates") + stat_summary(aes(color=treatment, fill=treatment),fun.data="mean_cl_boot", geom=c("smooth"), se=TRUE) + theme(panel.background = element_rect(fill='white', colour='black')) + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) + guides(fill=FALSE) +scale_colour_manual(values=viridis(4)) + scale_fill_manual(values=viridis(4)) + facet_grid(task ~ partner, scales='free')
+ggplot(data=initial_data, aes(x=update, y=count, group=treatment, colour=treatment)) + ylab("Task count") + xlab("Updates") + stat_summary(aes(color=treatment, fill=treatment),fun.data="mean_cl_boot", geom=c("smooth"), se=TRUE) + theme(panel.background = element_rect(fill='white', colour='black')) + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) + guides(fill=FALSE) +scale_colour_manual(values=viridis(12)) + scale_fill_manual(values=viridis(12)) + facet_grid(task ~ partner, scales='free')
 
 # Specific host tasks over time
-host_over_time <- subset(initial_data, partner=="Host")
-limited_tasks <- subset(host_over_time, task=="NOT" | task=="NAND" | task=="AND" | task=="ORN" | task=="OR" | task=="ANDN")
 
-ggplot(data=limited_tasks, aes(x=update, y=count, group=treatment, colour=treatment)) + ylab("Task count") + xlab("Updates") + stat_summary(aes(color=treatment, fill=treatment),fun.data="mean_cl_boot", geom=c("smooth"), se=TRUE) + theme(panel.background = element_rect(fill='white', colour='black')) + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) + guides(fill=FALSE) +scale_colour_manual(name = "Parasites", values=viridis(3)) + scale_fill_manual(values=viridis(3)) + facet_grid(task ~ ., scales='free')
+limited_tasks <- subset(initial_data, task=="NOT" | task=="NAND" | task=="AND" | task=="ORN" | task=="OR" | task=="ANDN")
 
+ggplot(data=limited_tasks, aes(x=updates, y=count, group=treatment, colour=treatment)) + ylab("Task count") + xlab("Updates") + stat_summary(aes(color=treatment, fill=treatment),fun.data="mean_cl_boot", geom=c("smooth"), se=TRUE) + theme(panel.background = element_rect(fill='white', colour='black')) + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) + guides(fill=FALSE) +scale_colour_manual(name = "Parasites", values=viridis(12)) + scale_fill_manual(values=viridis(12)) + facet_grid(task ~ ., scales='free')
+colnames(limited_tasks)
 # Specific parasite tasks over time
 parasite_over_time <- subset(initial_data, partner=="Parasite")
 para_limited_tasks <- subset(parasite_over_time, task=="NOT" | task=="NAND" | task=="AND" | task=="ORN" | task=="OR")

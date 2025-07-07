@@ -112,6 +112,6 @@ small_counts <- subset(counts_df, update %% 5000 == 0)
 ```
 
 ```{r}
-task_plotter(subset(molten_tasks, host_task), 1, "Host task count", T)
-task_plotter(subset(molten_tasks, host_task), small_counts$count, "Host task count / Host count",T)
+task_plotter(subset(molten_tasks, host_task), 1, "Host task count")
+task_plotter(subset(molten_tasks, host_task), small_counts$count, "Host task count / Host count")
 ```

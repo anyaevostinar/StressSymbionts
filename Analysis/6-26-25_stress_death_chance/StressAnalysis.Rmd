@@ -10,6 +10,7 @@ library(tidyverse)
 ```
 
 # Theme, guides, facet funtion
+
 ```{r}
 standard_theme <- ggplot2::theme(panel.background = element_rect(fill='white', colour='black')) + 
   theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) +
@@ -20,15 +21,17 @@ standard_theme <- ggplot2::theme(panel.background = element_rect(fill='white', c
   
 standard_guides <-guides(fill="none",color=guide_legend(override.aes=list(fill=NA))) 
 
-standard_facet <- facet_grid(mut_size~death_chance) 
+standard_facet <- facet_grid(size~death_chance) 
         
 standard_visuals <- list(standard_theme, standard_guides, standard_facet)
 ```
 
 # Read data
+
 ```{r}
-folder <- "../../../symbulation_experiments/exp_2024/2024.12.16_stress_death_chance/"
+folder <- ""
 ```
+
 ```{r}
 counts_df <- read.csv(paste0(folder,"org_counts.dat"),h=T)
 counts_df$seed <- as.factor(counts_df$seed)
@@ -52,6 +55,7 @@ if("treatment" %in% colnames(tasks_df)){
 ```
 
 # Organism counts
+
 ```{r}
 ggplot(subset(counts_df, update %% 5000 == 0),aes(x=update)) + 
   stat_summary(aes(y=count,fill="Hosts",color="Hosts"),
@@ -66,6 +70,7 @@ ggplot(subset(counts_df, update %% 5000 == 0),aes(x=update)) +
 ```
 
 # Task Counts
+
 ```{r}
 task_plotter <- function(data_frame, weigh_by, ylab, exl_not=F){
   colors <- turbo(10)
@@ -103,7 +108,7 @@ not_plotter <- function(data_frame, weigh_by, ylab){
 ```
 
 ```{r}
-molten_tasks <- melt(tasks_df, id=c("seed","death_chance","update","mut_size"))
+molten_tasks <- melt(tasks_df, id=c("seed","death_chance","size", "update"))
 
 molten_tasks$host_task <- grepl("host",molten_tasks$variable, fixed=TRUE)
 molten_tasks <- subset(molten_tasks, update %% 5000 == 0)
