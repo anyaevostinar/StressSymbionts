@@ -114,4 +114,19 @@ small_counts <- subset(counts_df, update %% 5000 == 0)
 ```{r}
 task_plotter(subset(molten_tasks, host_task), 1, "Host task count", T)
 task_plotter(subset(molten_tasks, host_task), small_counts$count, "Host task count / Host count",T)
+
+task_plotter(subset(molten_tasks, host_task==F), 1, "Symbiont task count", T)
+task_plotter(subset(molten_tasks, host_task==F), small_counts$hosted_syms, "Symbiont task count / Symbiont count",T)
+```
+
+```{r}
+nand_df <- subset(molten_tasks, grepl("host_task_NAND",molten_tasks$variable, fixed=TRUE))
+
+ggplot(nand_df, aes(x=update, y=value)) +
+  geom_line(color="black", aes(group=seed), alpha=0.7) +
+  stat_summary(color=turbo(10)[2], fill=turbo(10)[2],
+                fun.data="mean_cl_boot", geom=c("smooth"), se=TRUE, na.rm = T) +
+  xlab("Update") + ylab("Host NAND task count") + standard_visuals
+
+
 ```
