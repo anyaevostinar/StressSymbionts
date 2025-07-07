@@ -1,1 +1,1 @@
-Experimenting with parasite death chance on.
+Experimenting with different parasite death chance settings, and a constant host base death chance (0.8)

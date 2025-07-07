@@ -1,0 +1,1 @@
+Experimenting with different mutualist death chance settings, and a constant host base death chance (0.5)

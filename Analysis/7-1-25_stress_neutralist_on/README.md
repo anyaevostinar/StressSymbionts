@@ -1,0 +1,1 @@
+Control experiment, with neutral symbionts turned on. Host death chance is 0.5.
