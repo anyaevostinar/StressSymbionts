@@ -1,0 +1,1 @@
+We will be testing for a comparison between parasitism (0.7), mutualism(0.3), and neutral symbionts death chances. The host base death chance is 0.5. Stress events happen every 3001 updates, meaning hosts have the ability to reproduce twice due to their host_max_life being 1500 updates.
