@@ -26,17 +26,19 @@ def munge_file(out_file_name, out_file_header, in_file_prefix) :
             except :
                 print("could not read", in_file_name)
 
+        ms = str(3) # no syms
+        s = str(seed) # seed 
         in_file_names = in_file_prefix + "_NO_SYMS" + "_SEED" + s + ".data"
-        line_prefixed = s + ","
+        line_prefixed = s + "," + ms + ","
         try :
-            in_file = open(folder+in_file_name, 'r')
+            in_file = open(folder+in_file_names, 'r')
             print("opened no symfile")                
             next(in_file)
             for line in in_file :
-                out_file.write(line_prefix + line)
+                out_file.write(line_prefixed + line)
             in_file.close()
         except :
-            print("could not read", in_file_name)
+            print("could not read", in_file_names)
     out_file.close()
 
 
