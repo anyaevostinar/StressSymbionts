@@ -1,0 +1,1 @@
+We will be testing for a comparison between parasitism (0.7), mutualism(0.3), and neutral symbionts death chances. The host base death chance is 0.5. ONLY_FIRST_TASK_CREDIT is on. A no syms simulation was run to compare as well.

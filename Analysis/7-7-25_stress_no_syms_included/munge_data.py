@@ -1,7 +1,7 @@
 import os.path
 import gzip
 
-folder = '../../Data/7-7-25_stress_syms_combined/'
+folder = '../../Data/7-7-25_stress_no_syms_included/'
 
 seeds = range(1, 30)
 treatments_1 = [0, 1, 2]

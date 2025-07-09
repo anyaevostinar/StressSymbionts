@@ -1,7 +1,7 @@
 import os.path
 import gzip
 
-folder = '../../Data/7-3-25_stress_syms_combined_bigger_stress_frequency/'
+folder = '../../Data/7-8-25_stress_syms_combined_first_task_on/'
 
 seeds = range(1, 30)
 treatments_1 = [0, 1, 2]
@@ -25,6 +25,20 @@ def munge_file(out_file_name, out_file_header, in_file_prefix) :
                 in_file.close()
             except :
                 print("could not read", in_file_name)
+
+        ms = str(3) # no syms
+        s = str(seed) # seed 
+        in_file_names = in_file_prefix + "_NO_SYMS" + "_SEED" + s + ".data"
+        line_prefixed = s + "," + ms + ","
+        try :
+            in_file = open(folder+in_file_names, 'r')
+            print("opened no symfile")                
+            next(in_file)
+            for line in in_file :
+                out_file.write(line_prefixed + line)
+            in_file.close()
+        except :
+            print("could not read", in_file_names)
     out_file.close()
 
 
