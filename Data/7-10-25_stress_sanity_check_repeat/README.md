@@ -1,0 +1,1 @@
+The experiment is running the exact same SymSettings as he previous experiment (7-9-25_stress_sanity_check), expect updates will now run until 250,000. For our sanity check, we have turned off the ability of the symbionts to mutate, only allowing hosts to do so.
