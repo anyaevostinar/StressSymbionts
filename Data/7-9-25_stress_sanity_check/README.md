@@ -1,0 +1,1 @@
+The experiment is running the exact same SymSettings as he previous experiment (7-8-25_stress_syms_combined_first_task_on). For our sanity check, we have turned off the ability of the symbionts to mutate, only allowing hosts to do so.
