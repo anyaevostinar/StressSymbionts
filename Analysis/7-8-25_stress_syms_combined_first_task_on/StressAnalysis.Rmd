@@ -20,9 +20,12 @@ standard_theme <- ggplot2::theme(panel.background = element_rect(fill='white', c
   
 standard_guides <-guides(fill="none",color=guide_legend(override.aes=list(fill=NA))) 
 
-standard_facet <- facet_wrap(~treatment) 
+standard_facet <- facet_wrap(~treatment)
+seed_facet <- facet_wrap(~seed)
         
 standard_visuals <- list(standard_theme, standard_guides, standard_facet)
+
+seed_visuals <- list(standard_theme, standard_guides, seed_facet)
 ```
 
 # Read data
@@ -114,15 +117,15 @@ small_counts <- subset(counts_df, update %% 5000 == 0)
 ```
 
 ```{r}
-task_plotter(subset(molten_tasks, host_task), 1, "Host task count")
-task_plotter(subset(molten_tasks, host_task), small_counts$count, "Host task count / Host count")
+task_plotter(subset(molten_tasks, host_task), 1, "Host task count",T)
+task_plotter(subset(molten_tasks, host_task), small_counts$count, "Host task count / Host count",T)
 
-task_plotter(subset(molten_tasks, host_task==F), 1, "Symbiont task count")
-task_plotter(subset(molten_tasks, host_task==F), small_counts$count, "Symbiont task count / Symbiont count")
+task_plotter(subset(molten_tasks, host_task==F), 1, "Symbiont task count",T)
+task_plotter(subset(molten_tasks, host_task==F), small_counts$count, "Symbiont task count / Symbiont count",T)
 ```
 
 ```{r}
-seed_plotter <- function(type_sym, task_name){
+single_task_plotter <- function(type_sym, task_name){
   sym <- tolower(type_sym)
   task_name <- toupper(task_name)
   variable_name <- paste0(sym, "_task_",task_name)
@@ -146,5 +149,38 @@ seed_plotter <- function(type_sym, task_name){
 ```
 
 ```{r}
-seed_plotter("host", "nor")
+single_task_plotter("Host", "NOT")
+single_task_plotter("Host", "NAND")
+single_task_plotter("Host", "ORN")
+single_task_plotter("SYM", "NOT")
+single_task_plotter("SYM", "NAND")
+single_task_plotter("SYM", "ORN")
+
 ```
+
+```{r}
+seed_plotter <- function(task_name, host_type){
+  task_name <- toupper(task_name)
+  host_type <- str_to_title(host_type)
+  seeds_df <- molten_tasks
+  
+  seeds_df$wanted_task <-grepl(task_name,seeds_df$variable, fixed = TRUE)
+  seeds_df <- subset(seeds_df, update%%2000 != 0)
+  
+  seeds_df$type <- seeds_df$host_task
+  if("type" %in% colnames(seeds_df)){
+    seeds_df$type <- ifelse(seeds_df$type == TRUE, "Hosts", "Symbionts")
+  }
+
+  ggplot(subset(seeds_df, wanted_task == T & treatment == host_type), aes(x=update, y=value)) +
+    geom_line(aes(color=type)) + scale_color_discrete(name = "Organism") +
+    seed_visuals + ylab(paste(host_type,task_name,"Task Counts")) + xlab("Updates")
+}
+```
+
+```{r}
+seed_plotter("ORN", "Mutualist")
+seed_plotter("ORN", "Parasite")
+
+```
+
