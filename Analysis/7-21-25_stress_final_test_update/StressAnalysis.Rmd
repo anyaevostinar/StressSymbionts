@@ -115,11 +115,11 @@ molten_tasks <- melt(tasks_df, id=c("seed","sym_type","update","treatment"))
 
 molten_tasks$host_task <- grepl("host",molten_tasks$variable, fixed=TRUE)
 
-molten_per_tasks <- subset(molten_tasks, update %% 2000 != 0)
-small_per_count <- subset(counts_df, update %% 2000 != 0)
+molten_per_tasks <- subset(molten_tasks, update %% 1500 != 0)
+small_per_count <- subset(counts_df, update %% 1500 != 0)
 
-molten_tasks <- subset(molten_tasks, update %% 5000 == 0)
-small_counts <- subset(counts_df, update %% 5000 == 0)
+molten_tasks <- subset(molten_tasks, update %%5000==0)
+small_counts <- subset(counts_df, update %%5000==0)
 ```
 
 ```{r}
@@ -161,6 +161,7 @@ single_task_plotter <- function(type_sym, task_name){
 ```{r}
 single_task_plotter("Host", "NOT")
 single_task_plotter("Host", "NAND")
+single_task_plotter("Host", "AND")
 single_task_plotter("Host", "ORN")
 single_task_plotter("Host", "OR")
 single_task_plotter("Host", "ANDN")
@@ -169,6 +170,7 @@ single_task_plotter("Host", "XOR")
 single_task_plotter("Host", "EQU")
 single_task_plotter("SYM", "NOT")
 single_task_plotter("SYM", "NAND")
+single_task_plotter("SYM", "AND")
 single_task_plotter("SYM", "ORN")
 single_task_plotter("SYM", "OR")
 single_task_plotter("SYM", "ANDN")
@@ -188,7 +190,7 @@ seed_plotter <- function(task, type){
   seeds_df$wanted_task <-grepl(paste0("host",task_name) ,seeds_df$variable, perl = TRUE) + 
     grepl(paste0("sym",task_name) ,seeds_df$variable, perl = TRUE)
 
-  seeds_df <- subset(seeds_df, update%%2000 != 0)
+  seeds_df <- subset(seeds_df, update%%1500 != 0)
   
   seeds_df$type <- seeds_df$host_task
   if("type" %in% colnames(seeds_df)){
@@ -236,4 +238,6 @@ box_plotter <- function(name){
 ```{r}
 box_plotter("Host")
 box_plotter("Symbiont")
+### Weighing boxplot by counts
+### Summation of all tasks (including and excluding NOT); could be by time
 ```
