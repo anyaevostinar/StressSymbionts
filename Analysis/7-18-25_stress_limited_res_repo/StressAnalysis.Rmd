@@ -115,8 +115,8 @@ molten_tasks <- melt(tasks_df, id=c("seed","sym_type","update","treatment"))
 
 molten_tasks$host_task <- grepl("host",molten_tasks$variable, fixed=TRUE)
 
-molten_per_tasks <- subset(molten_tasks, update %% 2000 != 0)
-small_per_count <- subset(counts_df, update %% 2000 != 0)
+molten_per_tasks <- subset(molten_tasks, update %% 1500 != 0)
+small_per_count <- subset(counts_df, update %% 1500 != 0)
 
 molten_tasks <- subset(molten_tasks, update %% 5000 == 0)
 small_counts <- subset(counts_df, update %% 5000 == 0)
