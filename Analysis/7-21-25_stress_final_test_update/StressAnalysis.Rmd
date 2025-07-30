@@ -61,7 +61,7 @@ if("treatment" %in% colnames(tasks_df)){
 
 # Organism counts
 ```{r}
-ggplot(subset(counts_df, update %% 5000 == 0),aes(x=update)) + 
+ggplot(subset(counts_df, update %% 1000 == 0 & update %% 1500 != 0),aes(x=update)) + 
   stat_summary(aes(y=count,fill="Hosts",color="Hosts"),
                fun.data="mean_cl_boot", geom=c("smooth"), se=TRUE) +
   stat_summary(aes(y=hosted_syms,fill="Symbionts",color="Syms"),
@@ -115,11 +115,8 @@ molten_tasks <- melt(tasks_df, id=c("seed","sym_type","update","treatment"))
 
 molten_tasks$host_task <- grepl("host",molten_tasks$variable, fixed=TRUE)
 
-molten_per_tasks <- subset(molten_tasks, update %% 1500 != 0)
-small_per_count <- subset(counts_df, update %% 1500 != 0)
-
-molten_tasks <- subset(molten_tasks, update %%5000==0)
-small_counts <- subset(counts_df, update %%5000==0)
+molten_tasks <- subset(molten_tasks, update %% 1000==0 & update %% 1500 != 0)
+small_counts <- subset(counts_df, update %% 1000==0 & update %% 1500 != 0)
 ```
 
 ```{r}
@@ -241,3 +238,12 @@ box_plotter("Symbiont")
 ### Weighing boxplot by counts
 ### Summation of all tasks (including and excluding NOT); could be by time
 ```
+
+
+# EOE task richness
+```{r}
+```
+
+# Task richness over time
+
+# Task completions over time
