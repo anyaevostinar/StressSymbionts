@@ -35,7 +35,7 @@ box_visuals <- list(standard_theme, standard_guides, box_facet)
 folder <- ""
 ```
 ```{r}
-counts_df <- read.csv(paste0(folder,"org_counts.dat"),h=T)
+counts_df <- read_csv(paste0(folder,"org_counts.dat"))
 counts_df$seed <- as.factor(counts_df$seed)
 counts_df$treatment <- counts_df$sym_type
 if("treatment" %in% colnames(counts_df)){
@@ -47,7 +47,7 @@ if("treatment" %in% colnames(counts_df)){
 ```
 
 ```{r}
-tasks_df <- read.csv(paste0(folder,"task_counts.dat"),h=T)
+tasks_df <- read_csv(paste0(folder,"task_counts.dat"))
 tasks_df$seed <- as.factor(tasks_df$seed)
 
 tasks_df$treatment <- tasks_df$sym_type
@@ -213,6 +213,18 @@ seed_plotter("ORN", "Parasite")
 seed_plotter("OR", "Mutualist")
 seed_plotter("OR", "Parasite")
 
+seed_plotter("ANDN", "Mutualist")
+seed_plotter("ANDN", "Parasite")
+
+seed_plotter("NOR", "Mutualist")
+seed_plotter("NOR", "Parasite")
+
+seed_plotter("XOR", "Mutualist")
+seed_plotter("XOR", "Parasite")
+
+seed_plotter("EQU", "Mutualist")
+seed_plotter("EQU", "Parasite")
+
 ```
 
 ```{r}
@@ -240,10 +252,144 @@ box_plotter("Symbiont")
 ```
 
 
-# EOE task richness
+# Task richness over time
+## over time
 ```{r}
+
+box_df <- subset(tasks_df,  update %% 1000==0 & update %% 1500 != 0)
+
+box_df$host_task_richness <- rowSums(ifelse(box_df[grepl("host_task", colnames(box_df))] > 0, 1 ,0))
+box_df$sym_task_richness <- rowSums(ifelse(box_df[grepl("sym_task", colnames(box_df))] > 0, 1 ,0))
 ```
 
-# Task richness over time
+```{r}
+richness_over_time <- function(y_col, y_lab){
+  ggplot(box_df, aes(x=update,y=y_col)) + 
+    standard_theme + standard_guides + 
+    stat_summary(aes(color=treatment, fill=treatment), fun.data="mean_cl_boot", geom=c("smooth"), se=TRUE, na.rm = T) +
+    xlab("Update") + ylab(y_lab) +  
+    scale_color_manual(name="Treatment", values=c("Mutualist"="#440154FF", "No Symbionts"="#31688EFF", "Parasite"="#35B779FF")) +
+    scale_fill_manual(values=c("Mutualist"="#440154FF", "No Symbionts"="#31688EFF", "Parasite"="#35B779FF")) 
+}
 
-# Task completions over time
+richness_over_time(box_df$host_task_richness, "Host task richness")
+richness_over_time(box_df$sym_task_richness, "Symbiont task richness")
+```
+
+## at end of experiment
+```{r}
+box_df <- subset(box_df, update==max(update))
+
+ggplot(data=subset(box_df), aes(x=host_task_richness, fill=treatment)) + 
+    geom_histogram(data=subset(box_df, treatment=="Mutualist"),na.rm=T, bins=6, alpha=0.5) +
+    geom_histogram(data=subset(box_df, treatment=="No Symbionts"),na.rm=T, bins=6, alpha=0.5) +
+    geom_histogram(data=subset(box_df, treatment=="Parasite"),na.rm=T, bins=6, alpha=0.5) +
+    standard_theme  + 
+    ylab("Replicate count") + xlab("Host task richness") +  
+    scale_fill_manual(name="Treatment", values=c("Mutualist"="#440154FF", "No Symbionts"="#31688EFF", "Parasite"="#35B779FF")) +
+    theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+
+ggplot(data=subset(box_df), aes(x=sym_task_richness, fill=treatment)) + 
+    geom_histogram(data=subset(box_df, treatment=="Mutualist"),na.rm=T, bins=6, alpha=0.5) +
+    geom_histogram(data=subset(box_df, treatment=="Parasite"),na.rm=T, bins=6, alpha=0.5) +
+    standard_theme  + 
+    ylab("Replicate count") + xlab("Symbiont task richness") +  
+    scale_fill_manual(name="Treatment", values=c("Mutualist"="#440154FF", "No Symbionts"="#31688EFF", "Parasite"="#35B779FF")) +
+    theme(axis.text.x = element_text(angle = 90, hjust = 1))
+```
+# Task completions
+
+## over time
+```{r}
+box_df <- subset(tasks_df,update %% 1000==0 & update %% 1500 != 0) 
+box_df <- merge(box_df, subset(small_counts, update %% 1000==0 & update %% 1500 != 0))
+
+box_df$host_total_tasks <- rowSums(box_df[grepl("host_task", colnames(box_df))])
+box_df$sym_total_tasks <- rowSums(box_df[grepl("sym_task", colnames(box_df))])
+
+box_df$host_notnot_tasks <- rowSums(box_df[grepl("host_task", colnames(box_df)) & !grepl("host_task_NOT", colnames(box_df))])
+box_df$sym_notnot_tasks <- rowSums(box_df[grepl("sym_task", colnames(box_df)) & !grepl("sym_task_NOT", colnames(box_df))])
+
+
+```
+
+```{r}
+combo_task_over_time <- function(y_col, y_lab){
+  ggplot(box_df, aes(x=update,y=y_col)) + 
+    standard_theme + standard_guides + 
+    stat_summary(aes(color=treatment, fill=treatment), fun.data="mean_cl_boot", geom=c("smooth"), se=TRUE, na.rm = T) +
+    xlab("Update") + ylab(y_lab) +  
+    scale_color_manual(name="Treatment", values=c("Mutualist"="#440154FF", "No Symbionts"="#31688EFF", "Parasite"="#35B779FF")) +
+    scale_fill_manual(values=c("Mutualist"="#440154FF", "No Symbionts"="#31688EFF", "Parasite"="#35B779FF")) 
+}
+
+combo_task_over_time(box_df$host_total_tasks, "Combined host task count")
+combo_task_over_time(box_df$sym_total_tasks, "Combined symbiont task count")
+combo_task_over_time(box_df$host_notnot_tasks, "Combined (excl. NOT) host task count")
+combo_task_over_time(box_df$sym_notnot_tasks, "Combined (excl. NOT) symbiont task count")
+
+combo_task_over_time(box_df$host_total_tasks / box_df$count , "Combined host task count /\nhost count")
+combo_task_over_time(box_df$sym_total_tasks / box_df$hosted_syms , "Combined symbiont task count /\nsymbiont count")
+combo_task_over_time(box_df$host_notnot_tasks / box_df$count , "Combined (excl. NOT) host task count /\nhost count")
+combo_task_over_time(box_df$sym_notnot_tasks / box_df$hosted_syms, "Combined (excl. NOT) symbiont task count /\nsymbiont count")
+
+```
+
+```{r}
+combo_task_over_time_rep <- function(y_col, y_lab){
+  ggplot(box_df, aes(x=update,y=y_col)) + 
+    standard_theme + standard_guides + 
+    geom_line(aes(group=seed), alpha=0.7, color="black") +
+    facet_wrap(~treatment) +
+    stat_summary(aes(color=treatment, fill=treatment), fun.data="mean_cl_boot", geom=c("smooth"), se=TRUE, na.rm = T) +
+    xlab("Update") + ylab(y_lab) +  
+    scale_color_manual(name="Treatment", values=c("Mutualist"="#440154FF", "No Symbionts"="#31688EFF", "Parasite"="#35B779FF")) +
+    scale_fill_manual(values=c("Mutualist"="#440154FF", "No Symbionts"="#31688EFF", "Parasite"="#35B779FF")) 
+}
+
+combo_task_over_time_rep(box_df$host_total_tasks, "Combined host task count")
+combo_task_over_time_rep(box_df$sym_total_tasks, "Combined symbiont task count")
+combo_task_over_time_rep(box_df$host_notnot_tasks, "Combined (excl. NOT) host task count")
+combo_task_over_time_rep(box_df$sym_notnot_tasks, "Combined (excl. NOT) symbiont task count")
+
+combo_task_over_time_rep(box_df$host_total_tasks / box_df$count , "Combined host task count /\nhost count")
+combo_task_over_time_rep(box_df$sym_total_tasks / box_df$hosted_syms , "Combined symbiont task count /\nsymbiont count")
+combo_task_over_time_rep(box_df$host_notnot_tasks / box_df$count , "Combined (excl. NOT) host task count /\nhost count")
+combo_task_over_time_rep(box_df$sym_notnot_tasks / box_df$hosted_syms, "Combined (excl. NOT) symbiont task count /\nsymbiont count")
+
+```
+
+## at end of experiment
+```{r}
+box_df <- subset(tasks_df, update == max(update)) 
+
+box_df$host_total_tasks <- rowSums(box_df[grepl("host_task", colnames(box_df))])
+box_df$sym_total_tasks <- rowSums(box_df[grepl("sym_task", colnames(box_df))])
+
+box_df$host_notnot_tasks <- rowSums(box_df[grepl("host_task", colnames(box_df)) & !grepl("host_task_NOT", colnames(box_df))])
+box_df$sym_notnot_tasks <- rowSums(box_df[grepl("sym_task", colnames(box_df)) & !grepl("sym_task_NOT", colnames(box_df))])
+
+box_df <- merge(box_df, subset(small_counts, update==max(update)))
+```
+
+```{r}
+combo_task_plotted <- function(y_col, y_lab){
+  ggplot(box_df, aes(x=treatment,y=y_col)) + 
+    geom_boxplot(na.rm=T) + standard_theme + standard_guides + 
+    geom_point(aes(color=treatment), alpha = 0.2, position = position_jitterdodge(), na.rm=T) + 
+    xlab("Symbiont Type") + ylab(y_lab) +  scale_color_manual(name="Treatment", values=viridis(4)) + 
+    theme(axis.text.x = element_text(angle = 90, hjust = 1))
+}
+
+combo_task_plotted(box_df$host_total_tasks, "Combined host task count")
+combo_task_plotted(box_df$sym_total_tasks, "Combined symbiont task count")
+combo_task_plotted(box_df$host_notnot_tasks, "Combined (excl. NOT) host task count")
+combo_task_plotted(box_df$sym_notnot_tasks, "Combined (excl. NOT) symbiont task count")
+
+combo_task_plotted(box_df$host_total_tasks / box_df$count , "Combined host task count /\nhost count")
+combo_task_plotted(box_df$sym_total_tasks / box_df$hosted_syms , "Combined symbiont task count /\nsymbiont count")
+combo_task_plotted(box_df$host_notnot_tasks / box_df$count , "Combined (excl. NOT) host task count /\nhost count")
+combo_task_plotted(box_df$sym_notnot_tasks / box_df$hosted_syms, "Combined (excl. NOT) symbiont task count /\nsymbiont count")
+
+```
